@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  ollama:
+    build:
+      context: .
+      dockerfile: Dockerfile.ollama
+    container_name: ollama_container
+    ports:
+      - "11434:11434"
+    networks:
+      - llm_network
+
+  mise:
+    build:
+      context: .
+      dockerfile: Dockerfile.mise
+    container_name: mise_container
+    depends_on:
+      - ollama
+    networks:
+      - llm_network
+    ports:
+      - "8080:8080"  # File Browser UI available at localhost:8080
+
+networks:
+  llm_network:
+    driver: bridge
