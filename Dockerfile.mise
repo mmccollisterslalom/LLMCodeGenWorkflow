@@ -1,0 +1,25 @@
+# Base image
+FROM debian:latest
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y curl
+
+# Install Mise-en-Place
+RUN curl -fsSL https://mise.en.place/install.sh | sh
+
+# Install File Browser
+RUN curl -fsSL https://github.com/filebrowser/filebrowser/releases/latest/download/linux-amd64-filebrowser -o /usr/local/bin/filebrowser \
+    && chmod +x /usr/local/bin/filebrowser
+
+# Create directory for output files inside the container
+RUN mkdir -p /app/output
+
+# Expose File Browser's port
+EXPOSE 8080
+
+# Copy the startup script into the container
+COPY start_mise.sh /start_mise.sh
+RUN chmod +x /start_mise.sh
+
+# Set entrypoint
+ENTRYPOINT ["/start_mise.sh"]
